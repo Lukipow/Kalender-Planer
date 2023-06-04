@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kalenderplaner</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Kalenderplaner</h1>
+    
+    <div>
+      <button onclick="previousMonth()">Vorheriger Monat</button>
+      <span id="currentMonth"></span>
+      <button onclick="nextMonth()">Nächster Monat</button>
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Montag</th>
+          <th>Dienstag</th>
+          <th>Mittwoch</th>
+          <th>Donnerstag</th>
+          <th>Freitag</th>
+          <th class="weekend">Samstag</th>
+          <th class="weekend">Sonntag</th>
+        </tr>
+      </thead>
+      <tbody id="calendarBody"></tbody>
+    </table>
+    
+    <h2>Ereignisse</h2>
+    
+    <div>
+      <input type="text" id="eventName" placeholder="Ereignisname">
+      <input type="date" id="eventDate">
+      <input type="time" id="eventTime">
+      <button onclick="addEvent()">Hinzufügen</button>
+    </div>
+    
+    <div>
+      <input type="text" id="searchEventName" placeholder="Ereignisname">
+      <button onclick="searchEvents()">Suchen</button>
+    </div>
+    
+    <ul id="eventList"></ul>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
