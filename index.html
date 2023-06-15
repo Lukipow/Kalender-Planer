@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Kalenderplaner</title>
+  <meta charset="UTF-8">
+  <title>Wochenplaner</title>
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
   <div class="container">
-    <h1>Kalenderplaner</h1>
-    
-    <div>
-      <button onclick="previousMonth()">Vorheriger Monat</button>
-      <span id="currentMonth"></span>
-      <button onclick="nextMonth()">Nächster Monat</button>
+    <h1>Wochenplaner</h1>
+
+    <div class="week-info">
+      <button onclick="previousWeek()">Vorherige Woche</button>
+      <h2 id="weekInfo"></h2>
+      <button onclick="nextWeek()">Nächste Woche</button>
     </div>
-    
-    <table>
+
+    <table id="calendarTable">
       <thead>
         <tr>
+          <th>Kalenderwoche</th>
           <th>Montag</th>
           <th>Dienstag</th>
           <th>Mittwoch</th>
@@ -28,24 +32,23 @@
       </thead>
       <tbody id="calendarBody"></tbody>
     </table>
-    
-    <h2>Ereignisse</h2>
-    
-    <div>
-      <input type="text" id="eventName" placeholder="Ereignisname">
+
+    <h2>Ereignis hinzufügen</h2>
+    <div class="event-form">
+      <input type="text" id="eventName" placeholder="Name">
       <input type="date" id="eventDate">
       <input type="time" id="eventTime">
       <button onclick="addEvent()">Hinzufügen</button>
     </div>
-    
-    <div>
-      <input type="text" id="searchEventName" placeholder="Ereignisname">
-      <button onclick="searchEvents()">Suchen</button>
+
+    <h2>Ereignisse</h2>
+    <div class="event-search">
+      <input type="text" id="searchEventName" placeholder="Ereignis suchen" oninput="searchEvents()">
     </div>
-    
     <ul id="eventList"></ul>
   </div>
-  
+
   <script src="script.js"></script>
 </body>
+
 </html>

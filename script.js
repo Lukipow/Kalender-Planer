@@ -1,123 +1,103 @@
-// Initialisierung
-var currentDate = new Date();
-var currentMonth = currentDate.getMonth();
-var currentYear = currentDate.getFullYear();
-
-// Ereignisse in diesem Monat
+var currentWeekStart;
+var currentWeekEnd;
 var events = [];
 
-// Monat anzeigen
-function showCalendar() {
-  var firstDay = new Date(currentYear, currentMonth, 1).getDay();
-  var daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+// Seite initialisieren
+function initPage() {
+  currentWeekStart = new Date();
+  currentWeekEnd = new Date();
+  currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay() + 1);
+  currentWeekEnd.setDate(currentWeekEnd.getDate() - currentWeekEnd.getDay() + 7);
 
-  var table = document.getElementById("calendarBody");
-  table.innerHTML = "";
-
-  var monthYearText = document.getElementById("currentMonth");
-  monthYearText.textContent = new Intl.DateTimeFormat('de-DE', { year: 'numeric', month: 'long' }).format(currentDate);
-
-  var date = 1;
-  for (var i = 0; i < 6; i++) {
-    var row = document.createElement("tr");
-
-    for (var j = 0; j < 7; j++) {
-      if (i === 0 && j < firstDay) {
-        var cell = document.createElement("td");
-        var cellText = document.createTextNode("");
-        cell.appendChild(cellText);
-        row.appendChild(cell);
-      } else if (date > daysInMonth) {
-        break;
-      } else {
-        var cell = document.createElement("td");
-        var cellText = document.createTextNode(date);
-        cell.appendChild(cellText);
-
-        // Markiere das Wochenende
-        if (j === 5 || j === 6) {
-          cell.classList.add("weekend");
-        }
-
-        // Prüfe, ob ein Ereignis an diesem Datum vorhanden ist
-        var event = getEventByDate(currentYear, currentMonth, date);
-        if (event) {
-          var eventSpan = document.createElement("span");
-          eventSpan.textContent = event.name;
-          cell.appendChild(document.createElement("br"));
-          cell.appendChild(eventSpan);
-        }
-
-        row.appendChild(cell);
-        date++;
-      }
-    }
-
-    table.appendChild(row);
-  }
-}
-
-// Hilfsfunktion, um Ereignis anhand des Datums zu suchen
-function getEventByDate(year, month, day) {
-  for (var i = 0; i < events.length; i++) {
-    var event = events[i];
-    var eventDate = new Date(event.date);
-    if (eventDate.getFullYear() === year && eventDate.getMonth() === month && eventDate.getDate() === day) {
-      return event;
-    }
-  }
-  return null;
-}
-
-// Vorheriger Monat
-function previousMonth() {
-  currentMonth--;
-  if (currentMonth < 0) {
-    currentMonth = 11;
-    currentYear--;
-  }
-  currentDate = new Date(currentYear, currentMonth);
   showCalendar();
 }
 
-// Nächster Monat
-function nextMonth() {
-  currentMonth++;
-  if (currentMonth > 11) {
-    currentMonth = 0;
-    currentYear++;
+// Kalender anzeigen
+function showCalendar() {
+  var weekInfo = document.getElementById("weekInfo");
+  weekInfo.textContent = "KW " + getWeekNumber(currentWeekStart) + " - " + getMonthName(currentWeekStart.getMonth());
+
+  var calendarBody = document.getElementById("calendarBody");
+  calendarBody.innerHTML = "";
+
+  var currentDate = new Date(currentWeekStart);
+  while (currentDate <= currentWeekEnd) {
+    var row = document.createElement("tr");
+    var weekCell = document.createElement("td");
+    var dateCells = [];
+
+    weekCell.textContent = getWeekNumber(currentDate);
+    row.appendChild(weekCell);
+
+    for (var i = 0; i < 7; i++) {
+      var dateCell = document.createElement("td");
+
+      if (currentDate >= currentWeekStart && currentDate <= currentWeekEnd) {
+        dateCell.textContent = currentDate.getDate();
+
+        if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+          dateCell.classList.add("weekend");
+        }
+
+        var event = getEvent(currentDate);
+        if (event) {
+          var eventText = document.createElement("div");
+          eventText.textContent = event.name;
+          dateCell.appendChild(eventText);
+        }
+      }
+
+      row.appendChild(dateCell);
+      dateCells.push(dateCell);
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    calendarBody.appendChild(row);
   }
-  currentDate = new Date(currentYear, currentMonth);
+}
+
+// Vorherige Woche anzeigen
+function previousWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+  currentWeekEnd.setDate(currentWeekEnd.getDate() - 7);
+  showCalendar();
+}
+
+// Nächste Woche anzeigen
+function nextWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+  currentWeekEnd.setDate(currentWeekEnd.getDate() + 7);
   showCalendar();
 }
 
 // Ereignis hinzufügen
 function addEvent() {
-  var eventNameInput = document.getElementById("eventName");
-  var eventDateInput = document.getElementById("eventDate");
-  var eventTimeInput = document.getElementById("eventTime");
+  var eventName = document.getElementById("eventName").value;
+  var eventDate = document.getElementById("eventDate").value;
+  var eventTime = document.getElementById("eventTime").value;
 
-  var eventName = eventNameInput.value.trim();
-  var eventDate = eventDateInput.value;
-  var eventTime = eventTimeInput.value;
+  if (eventName && eventDate && eventTime) {
+    var event = {
+      name: eventName,
+      date: eventDate,
+      time: eventTime
+    };
 
-  if (eventName === "") {
-    alert("Bitte füge deinem Ereignis einen Namen hinzu");
-    return;
+    events.push(event);
+
+    showEvents();
   }
 
-  events.push({
-    name: eventName,
-    date: eventDate,
-    time: eventTime
-  });
+  document.getElementById("eventName").value = "";
+  document.getElementById("eventDate").value = "";
+  document.getElementById("eventTime").value = "";
+}
 
-  eventNameInput.value = "";
-  eventDateInput.value = "";
-  eventTimeInput.value = "";
-
+// Ereignis löschen
+function deleteEvent(index) {
+  events.splice(index, 1);
   showEvents();
-  showCalendar();
 }
 
 // Ereignisse anzeigen
@@ -126,86 +106,103 @@ function showEvents() {
   eventList.innerHTML = "";
 
   for (var i = 0; i < events.length; i++) {
+    var event = events[i];
+
     var eventItem = document.createElement("li");
-    eventItem.classList.add("event-item");
+    eventItem.className = "event-item";
 
-    var eventDetails = document.createElement("div");
-    var eventName = document.createElement("span");
-    eventName.textContent = events[i].name;
-    eventDetails.appendChild(eventName);
-
-    var eventDate = document.createElement("span");
-    eventDate.textContent = events[i].date;
-    eventDetails.appendChild(eventDate);
-
-    var eventTime = document.createElement("span");
-    eventTime.textContent = events[i].time;
-    eventDetails.appendChild(eventTime);
+    var eventText = document.createElement("div");
+    eventText.textContent = event.name + " - " + event.date + " " + event.time;
+    eventItem.appendChild(eventText);
 
     var deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete-button");
+    deleteButton.className = "delete-button";
     deleteButton.textContent = "Löschen";
-    deleteButton.setAttribute("data-index", i);
-    deleteButton.addEventListener("click", deleteEvent);
-    eventDetails.appendChild(deleteButton);
+    deleteButton.addEventListener("click", createDeleteEventHandler(i));
+    eventItem.appendChild(deleteButton);
 
-    eventItem.appendChild(eventDetails);
     eventList.appendChild(eventItem);
   }
 }
 
-// Ereignis löschen
-function deleteEvent(event) {
-  var index = event.target.getAttribute("data-index");
-  events.splice(index, 1);
-  showEvents();
-  showCalendar();
-}
-
-// Ereignisse nach Namen suchen
+// Ereignis suchen
 function searchEvents() {
-  var searchName = document.getElementById("searchEventName").value.trim();
-  if (searchName === "") {
-    showEvents();
-    return;
-  }
-
+  var searchEventName = document.getElementById("searchEventName").value;
   var filteredEvents = events.filter(function(event) {
-    return event.name.toLowerCase().includes(searchName.toLowerCase());
+    return event.name.toLowerCase().includes(searchEventName.toLowerCase());
   });
 
   var eventList = document.getElementById("eventList");
   eventList.innerHTML = "";
 
   for (var i = 0; i < filteredEvents.length; i++) {
+    var event = filteredEvents[i];
+
     var eventItem = document.createElement("li");
-    eventItem.classList.add("event-item");
+    eventItem.className = "event-item";
 
-    var eventDetails = document.createElement("div");
-    var eventName = document.createElement("span");
-    eventName.textContent = filteredEvents[i].name;
-    eventDetails.appendChild(eventName);
-
-    var eventDate = document.createElement("span");
-    eventDate.textContent = filteredEvents[i].date;
-    eventDetails.appendChild(eventDate);
-
-    var eventTime = document.createElement("span");
-    eventTime.textContent = filteredEvents[i].time;
-    eventDetails.appendChild(eventTime);
+    var eventText = document.createElement("div");
+    eventText.textContent = event.name + " - " + event.date + " " + event.time;
+    eventItem.appendChild(eventText);
 
     var deleteButton = document.createElement("button");
-    deleteButton.classList.add("delete-button");
+    deleteButton.className = "delete-button";
     deleteButton.textContent = "Löschen";
-    deleteButton.setAttribute("data-index", events.indexOf(filteredEvents[i]));
-    deleteButton.addEventListener("click", deleteEvent);
-    eventDetails.appendChild(deleteButton);
+    deleteButton.addEventListener("click", createDeleteEventHandler(events.indexOf(event)));
+    eventItem.appendChild(deleteButton);
 
-    eventItem.appendChild(eventDetails);
     eventList.appendChild(eventItem);
   }
 }
 
-// Initialisierung
-showCalendar();
-showEvents();
+// Ereignis anhand des Datums abrufen
+function getEvent(date) {
+  var event = events.find(function(event) {
+    return event.date === formatDate(date);
+  });
+
+  return event;
+}
+
+// Datum formatieren (YYYY-MM-DD)
+function formatDate(date) {
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+
+  if (month < 10) {
+    month = "0" + month;
+  }
+
+  if (day < 10) {
+    day = "0" + day;
+  }
+
+  return year + "-" + month + "-" + day;
+}
+
+// Kalenderwoche abrufen
+function getWeekNumber(date) {
+  var dateObject = new Date(date.getTime());
+  dateObject.setHours(0, 0, 0);
+  dateObject.setDate(dateObject.getDate() + 4 - (dateObject.getDay() || 7));
+  var yearStart = new Date(dateObject.getFullYear(), 0, 1);
+  var weekNo = Math.ceil((((dateObject - yearStart) / 86400000) + 1) / 7);
+  return weekNo;
+}
+
+// Monatsname abrufen
+function getMonthName(month) {
+  var monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  return monthNames[month];
+}
+
+// Ereignis löschen Event Handler erstellen
+function createDeleteEventHandler(index) {
+  return function() {
+    deleteEvent(index);
+  };
+}
+
+// Seite initialisieren
+initPage();
