@@ -1,0 +1,18 @@
+CREATE TABLE nutzer (
+ user TEXT NOT NULL PRIMARY KEY,
+ passwort TEXT  NOT NULL
+);
+
+CREATE TABLE planer (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ planer_name TEXT NOT NULL,
+ user TEXT NOT NULL,
+ oeffentlich TEXT NOT NULL,
+ schluessel TEXT
+);
+
+CREATE TABLE eintraege (
+ id INTEGER PRIMARY KEY AUTOINCREMENT,
+ eintrag TEXT NOT NULL,
+ datum DATE NOT NULL
+);
