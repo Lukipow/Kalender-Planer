@@ -15,11 +15,15 @@ const db= require("better-sqlite3")(DATABASE);
 app.use(express.static(__dirname + "/public")); 
 
 app.get("/login", function(req,res){
-    res.sendFile(__dirname +"/login.html")
+    res.sendFile(__dirname +"/views/login.html")
 });
 
 app.get("/register", function(req,res){
-    res.sendFile(__dirname +"/register.html")
+    res.sendFile(__dirname +"/views/register.html")
+});
+
+app.get("/kalender", function(req,res){
+    res.sendFile(__dirname +"/views/index.html")
 });
 
 app.listen(3000,function(){
