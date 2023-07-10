@@ -1,24 +1,71 @@
 <!DOCTYPE html>
 <html>
     <head>
+      <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     </head>
     <body>
         <form action="" method="post">
-            <div>
+          <div class="wrapper">
+            <nav class="nav">
+                <div class="nav-logo">
+                    <p>LOGO .</p>
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <ul>
+                        <li><a href="#" class="link active">Home</a></li>
+                        <li><a href="#" class="link">Blog</a></li>
+                        <li><a href="#" class="link">Services</a></li>
+                        <li><a href="#" class="link">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="register-container" id="register">
+                  <div class="top">
+                      <span>Have an account? <a href="/login">Login</a></span>
+                      <header>Sign Up</header>
+                  </div>
+
+                  <div class="two-forms">
+                    <div class="input-box">
+                        <label for="email">Email</label>
+                        <input type="text" class="input-field" placeholder="Email">
+                        <i class="bx bx-envelope"></i>
+                       <!-- <input type="email" id="email" name="email" required>
+                        <i class="bx bx-user"></i>-->
+                    </div>
+            <!--<div>
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" required>
-              </div>
+              </div>-->
+
+              <!--   old password
               <div>
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
-              </div>
+              </div>-->
+
+              <div class="input-box">
+                <label for="password">Password</label>
+                <input type="password" class="input-field" placeholder="Password">
+                <i class="bx bx-lock-alt"></i>
+            </div>
+
               <div>
                 <label for="password">Password wiederholen</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" class="input-field" placeholder="Password wiederholen">
               </div>
-              <button type="submit">Register</button>
+
+              <button type="submit">Login</button>
+
+              <div class="input-box">
+                <button type="submit">Register</button>
+                <input type="submit" class="submit" value="Register">
+            </div>
+            
+              <div class="nav-menu-btn">
+                <i class="bx bx-menu" onclick="myMenuFunction()"></i>
+            </div>
         </form>
-        <a href="/login">Login</a>
     </body>
 </html>

@@ -206,3 +206,32 @@ function createDeleteEventHandler(index) {
 
 // Seite initialisieren
 initPage();
+
+// Passwort generieren
+document.getElementById('login').addEventListener('submit', function(e) {
+  e.preventDefault(); // Prevent form submission
+
+  // Get the username and password from the form
+  var email = document.getElementByPlaceholder('email').value;
+  var password = document.getElementByPlaceholder('password').value;
+
+  // Send an AJAX request to the server
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === XMLHttpRequest.DONE) {
+      if (xhr.status === 200) {
+        // Successful login
+        window.location.href = "/kalender2"; // Redirect to home page
+      } else {
+        // Failed login
+        alert('Invalid email or password');
+      }
+    }
+  };
+
+  // Send the username and password as JSON data
+  xhr.send(JSON.stringify({ username: username, password: password }));
+});
